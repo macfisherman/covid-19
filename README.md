@@ -7,4 +7,4 @@ To compile the progams:
 * change to cmd/<program>
 * go build .
   
-An executable to be generated.
+An executable should be generated.
