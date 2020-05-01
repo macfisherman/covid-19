@@ -38,7 +38,13 @@ func main() {
 	for _, reading := range c[state] {
 		line.AddYAxis(reading.County, reading.Counts)
 		log.Println("Added " + reading.County)
-		log.Printf("Downward trend: %d\n", daysDecline(reading.Counts))
+
+		trend := daysDecline(reading.Counts)
+		if trend == len(reading.Counts) {
+			trend = 0
+		}
+
+		log.Printf("Downward trend: %d\n", trend)
 	}
 
 	f, err := os.Create(state + ".html")
@@ -102,16 +108,17 @@ func dayLabels(l int) []int64 {
 
 func daysDecline(l []int64) int {
 	var last int64
-	last = 1000000000000
+	last = 0
 
 	var trend int
 	for _, count := range l {
-		if count < last {
+		if count-last < 1 {
 			trend = trend + 1
-			last = count
+
 		} else {
 			trend = 0
 		}
+		last = count
 	}
 
 	return trend

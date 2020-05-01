@@ -26,7 +26,7 @@ func main() {
 	for state, countys := range c {
 		for _, reading := range countys {
 			decline := daysDecline(reading.Counts)
-			if decline > 0 {
+			if (decline > 0) && (decline != len(reading.Counts)) {
 				fmt.Printf("%02d: %s - %s\n", decline, reading.County, state)
 			}
 		}
@@ -75,16 +75,16 @@ func cvs2map(data io.Reader) map[string][]Reading {
 
 func daysDecline(l []int64) int {
 	var last int64
-	last = 1000000000000
+	last = 0
 
 	var trend int
 	for _, count := range l {
-		if count < last {
+		if count-last < 1 {
 			trend = trend + 1
-			last = count
 		} else {
 			trend = 0
 		}
+		last = count
 	}
 
 	return trend
